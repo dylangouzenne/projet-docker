@@ -1,0 +1,27 @@
+version: '3.3'
+
+services:
+    db:
+      image: mysql:5.7
+      volumes:
+        - db_data:/var/lib/mysql
+      restart: always
+      environment:
+        MYSQL_ROOT_PASSWORD: Simplon-123
+        MYSQL_DATABASE: App
+        MYSQL_USER: simplon
+        MYSQL_PASSWORD: Simplon-123
+
+    web:
+      depends_on:
+        - db
+      image: apache2_php7.2_ubuntu18.04:1.20
+      ports:
+        - "8080:80"
+      volumes:
+        - www_data:/var/www
+      restart: always
+
+volumes:
+    db_data:
+    www_data:

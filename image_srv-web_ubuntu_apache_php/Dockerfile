@@ -51,7 +51,7 @@ ENV HOME /root
 WORKDIR /var/www/
 
 # Port exposer.
-EXPOSE 80
+EXPOSE 80 443
 
 # Point d'entrée.
 ENTRYPOINT /usr/sbin/apache2ctl -D FOREGROUND

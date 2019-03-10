@@ -7,12 +7,14 @@ From alpine:3.7
 
 MAINTAINER Dylan Gouzenne <contact@dylangouzenne.fr>
 
-# Installation de bash et du serveur web apache2
-RUN apk update && apk add --no-cache \
+# Installation du serveur web apache2
+RUN apk update && apk add \
 	bash \
 	vim \
 	git \
-	apache2 
+	openrc \
+	apache2 \
+	apache2-proxy
 
 # Variables environment.
 ENV HOME /root
@@ -21,7 +23,8 @@ ENV HOME /root
 WORKDIR /var/www/
 
 # Port exposer.
-EXPOSE 80
+EXPOSE 80 443
 
 # Point d'entrée.
-CMD /bin/bash
+ENTRYPOINT rc-service apache2 start -q
+#ENTRYPOINT /usr/sbin/httpd -D FOREGROUND

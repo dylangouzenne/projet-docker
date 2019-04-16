@@ -40,7 +40,7 @@ echo -e '\033[1;32;40mInstallation de Docker-Compose réussi : '$c_v'\033[0m'
 
 # Config pour utiliser la commande docker sans utiliser sudo
 echo -e '\033[1;33;40mConfig pour utiliser la commande docker sans utiliser sudo\033[0m'
-sudo usermod -aG docker $USER
+sudo adduser $USER docker
 
 # Redémarer la machine pour appliquer l'ajout de l'user au groupe docker
 echo -en '\033[1;31;40mVoulez vous redémarer le système pour appliquer les mise a jour Y/N : \033[0m'

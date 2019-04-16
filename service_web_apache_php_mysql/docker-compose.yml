@@ -3,6 +3,7 @@ version: '3.3'
 services:
     db:
       image: mysql:5.7
+      container_name: srv_mysql
       volumes:
         - db_data:/var/lib/mysql
       restart: always
@@ -12,16 +13,35 @@ services:
         MYSQL_USER: simplon
         MYSQL_PASSWORD: Simplon-123
 
+    phpmyadmin:
+      depends_on:
+        - db
+      image: phpmyadmin/phpmyadmin
+      container_name: phpmyadmin
+      environment:
+        - PMA_ARBITRARY=1
+        - PMA_HOST=srv_mysql
+        - PMA_PORT=3306
+        - PMA_USER=simplon
+        - PMA_PASSWORD=Simplon-123
+      restart: always
+      ports:
+        - "3081:80"
+      volumes:
+        - phpmyadmin_session:/sessions
+
     web:
       depends_on:
         - db
       image: apache2_php7.2_ubuntu18.04:1.20
+      container_name: srv_web
       ports:
-        - "8080:80"
+        - "3080:80"
       volumes:
         - www_data:/var/www
       restart: always
 
 volumes:
     db_data:
+    phpmyadmin_session:
     www_data:

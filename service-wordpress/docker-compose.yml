@@ -1,27 +1,51 @@
 version: '3.3'
 
 services:
-   db:
-     image: mysql:5.7
-     volumes:
-       - db_data:/var/lib/mysql
-     restart: always
-     environment:
-       MYSQL_ROOT_PASSWORD: somewordpress
-       MYSQL_DATABASE: wordpress
-       MYSQL_USER: wordpress
-       MYSQL_PASSWORD: wordpress
+    db:
+      image: mysql:5.7
+      container_name: srv_mysql
+      volumes:
+        - db_data:/var/lib/mysql
+      restart: always
+      environment:
+        MYSQL_ROOT_PASSWORD: somewordpress
+        MYSQL_DATABASE: wordpress
+        MYSQL_USER: wordpress
+        MYSQL_PASSWORD: wordpress
 
-   wordpress:
-     depends_on:
-       - db
-     image: wordpress:latest
-     ports:
-       - "8000:80"
-     restart: always
-     environment:
-       WORDPRESS_DB_HOST: db:3306
-       WORDPRESS_DB_USER: wordpress
-       WORDPRESS_DB_PASSWORD: wordpress
+    phpmyadmin:
+      depends_on:
+        - db
+      image: phpmyadmin/phpmyadmin
+      container_name: phpmyadmin
+      environment:
+        - PMA_ARBITRARY=1
+        - PMA_HOST=srv_mysql
+        - PMA_PORT=3306
+        - PMA_USER=wordpress
+        - PMA_PASSWORD=wordpress
+      restart: always
+      ports:
+        - "8081:80"
+      volumes:
+        - phpmyadmin_session:/sessions
+
+    wordpress:
+      depends_on:
+        - db
+      image: wordpress:latest
+      container_name: srv_wordpress
+      ports:
+        - "8080:80"
+      volumes:
+        - wordpress_data:/var/www/html
+      restart: always
+      environment:
+        WORDPRESS_DB_HOST: db:3306
+        WORDPRESS_DB_USER: wordpress
+        WORDPRESS_DB_PASSWORD: wordpress
+
 volumes:
     db_data:
+    phpmyadmin_session:
+    wordpress_data:

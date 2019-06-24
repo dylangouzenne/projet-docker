@@ -1,0 +1,53 @@
+version: '3.3'
+
+services:
+    db:
+      image: mysql:5.7
+      container_name: srv_mysql
+      volumes:
+        - db_data:/var/lib/mysql
+      restart: always
+      environment:
+        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        MYSQL_USER: ${MYSQL_USER}
+        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        MYSQL_DATABASE: ${MYSQL_DATABASE}
+
+    phpmyadmin:
+      depends_on:
+        - db
+      image: phpmyadmin/phpmyadmin
+      container_name: phpmyadmin
+      environment:
+        - PMA_ARBITRARY=${PMA_ARBITRARY}
+        - PMA_HOST=${PMA_HOST}
+        - PMA_PORT=${PMA_PORT}
+        - PMA_USER=${PMA_USER}
+        - PMA_PASSWORD=${PMA_PASSWORD}
+      restart: always
+      ports:
+        - "8081:80"
+      volumes:
+        - phpmyadmin_session:/sessions
+
+    wordpress:
+      depends_on:
+        - db
+      image: wordpress:latest
+      container_name: srv_wordpress
+      ports:
+        - "8080:80"
+      volumes:
+        - wordpress_data:/var/www/html
+      restart: always
+      environment:
+        WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST}
+        WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
+        WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+        WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME}
+        WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
+
+volumes:
+    db_data:
+    phpmyadmin_session:
+    wordpress_data:

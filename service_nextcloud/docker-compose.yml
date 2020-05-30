@@ -47,19 +47,22 @@ services:
         MYSQL_PASSWORD: ${NEXTCLOUD_DB_PASSWORD}
         MYSQL_DATABASE: ${NEXTCLOUD_DB_NAME}
         NEXTCLOUD_TABLE_PREFIX: ${NEXTCLOUD_TABLE_PREFIX}
+        NEXTCLOUD_TRUSTED_DOMAINS: ${NEXTCLOUD_TRUSTED_DOMAINS}
         NEXTCLOUD_ADMIN_USER: ${NEXTCLOUD_ADMIN_USER}
         NEXTCLOUD_ADMIN_PASSWORD: ${NEXTCLOUD_ADMIN_PASSWORD}
 
-    # onlyoffice:
-    #   image: onlyoffice/documentserver:latest
-    #   container_name: srv_onlyoffice
-    #   ports:
-    #     - "80:80"
-    #   volumes:
-    #     - onlyoffice_data:/var/www/onlyoffice/Data
-    #   restart: always
-    #   environment:
-    #     DOCUMENT_SERVER_PORT_80_TCP_ADDR: srv_onlyoffice
+    onlyoffice:
+      depends_on:
+        - nextcloud
+      image: onlyoffice/documentserver:latest
+      container_name: srv_onlyoffice
+      ports:
+        - "8082:80"
+      # volumes:
+      #   - onlyoffice_data:/var/www/onlyoffice/Data
+      restart: always
+      environment:
+        DOCUMENT_SERVER_PORT_80_TCP_ADDR: srv_onlyoffice
        
 
 volumes:
